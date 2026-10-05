@@ -25,6 +25,7 @@ function App() {
       <p>{a}</p>
       <ThemeContext.Provider value={a}>
           <Navbar />
+          
       </ThemeContext.Provider>
       <Link to={"/home"}>Go to Navbar</Link>
       <p>Hello</p>
