@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 05 - jQuery & AJAX Integration</title>
+    <!-- Bootstrap CSS for spacing/styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .box-demo {
+            width: 100%;
+            height: 100px;
+            background-color: #ff5722;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        .user-card {
+            border-left: 5px solid #007bff;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <div class="container my-5">
+        <h1 class="text-center mb-4">jQuery Events & AJAX Data Fetching</h1>
+
+        <div class="row">
+            <!-- Left Side: jQuery Effects & Form Handling -->
+            <div class="col-12 col-md-6 mb-4">
+                <div class="card p-4 shadow-sm h-100">
+                    <h2>1. jQuery Core & Animations</h2>
+                    <p>Trigger smooth layout animations using built-in helper functions.</p>
+                    
+                    <button class="btn btn-secondary me-2" id="btn-fade">Fade Toggle Box</button>
+                    <button class="btn btn-secondary" id="btn-slide">Slide Toggle Box</button>
+
+                    <div class="box-demo" id="anim-box">
+                        Animation Box Node
+                    </div>
+
+                    <h3 class="mt-4">2. Form Input Handling</h3>
+                    <form id="contact-form">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" placeholder="Type letters only">
+                            <div class="text-danger small mt-1" id="form-error"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Validate form</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Side: AJAX API Loader -->
+            <div class="col-12 col-md-6 mb-4">
+                <div class="card p-4 shadow-sm h-100">
+                    <h2>3. Dynamic Data Loading (AJAX)</h2>
+                    <p>Fetch real-world user list from the JSONPlaceholder mock server in the background.</p>
+
+                    <button class="btn btn-success btn-sm mb-3 me-2" id="fetch-jquery">Load via jQuery AJAX</button>
+                    <button class="btn btn-outline-dark btn-sm mb-3" id="fetch-vanilla">Load via ES6 Fetch API</button>
+                    
+                    <div id="loader" class="text-center d-none">
+                        <div class="spinner-border text-primary" role="status"></div>
+                    </div>
+                    
+                    <div id="api-output" style="max-height: 350px; overflow-y: auto;">
+                        <p class="text-muted">No data loaded yet. Click one of the buttons above to load.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Integrate jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+        // Use jQuery Document Ready wrapper
+        $(document).ready(function() {
+
+            // --- 1. Animation Trigger Binding ---
+            $('#btn-fade').click(function() {
+                $('#anim-box').fadeToggle(300);
+            });
+
+            $('#btn-slide').click(function() {
+                $('#anim-box').slideToggle(300);
+            });
+
+            // --- 2. Form Input Validation & Manipulation ---
+            $('#contact-form').submit(function(event) {
+                event.preventDefault(); // Stop form page reload
+                
+                const usernameVal = $('#username').val().trim();
+                const errorDiv = $('#form-error');
+
+                if (usernameVal === "") {
+                    errorDiv.text("Username cannot be blank!");
+                    $('#username').addClass('is-invalid');
+                } else if (usernameVal.length < 4) {
+                    errorDiv.text("Username must be at least 4 characters long.");
+                    $('#username').addClass('is-invalid');
+                } else {
+                    errorDiv.text(""); // Clear error
+                    $('#username').removeClass('is-invalid').addClass('is-valid');
+                    alert(`Valid Username: ${usernameVal}! Ready to submit.`);
+                }
+            });
+
+            // --- 3. AJAX Requests ---
+            const apiUrl = 'https://jsonplaceholder.typicode.com/users';
+
+            // A. jQuery AJAX approach
+            $('#fetch-jquery').click(function() {
+                $('#loader').removeClass('d-none');
+                $('#api-output').empty(); // Clear current data
+                
+                $.ajax({
+                    url: apiUrl,
+                    type: 'GET',
+                    success: function(users) {
+                        $('#loader').addClass('d-none');
+                        renderUsers(users, 'jQuery AJAX');
+                    },
+                    error: function(err) {
+                        $('#loader').addClass('d-none');
+                        $('#api-output').html(`<div class="alert alert-danger">Error: ${err.statusText}</div>`);
+                    }
+                });
+            });
+
+            // B. ES6 Native Fetch API approach
+            $('#fetch-vanilla').click(function() {
+                $('#loader').removeClass('d-none');
+                $('#api-output').empty();
+
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) throw new Error(response.statusText);
+                        return response.json();
+                    })
+                    .then(users => {
+                        $('#loader').addClass('d-none');
+                        renderUsers(users, 'ES6 Fetch API');
+                    })
+                    .catch(error => {
+                        $('#loader').addClass('d-none');
+                        $('#api-output').html(`<div class="alert alert-danger">Error: ${error.message}</div>`);
+                    });
+            });
+
+            // Helper function to render JSON user items
+            function renderUsers(usersList, sourceLabel) {
+                let html = `<p class="badge bg-primary mb-3">Loaded via: ${sourceLabel}</p>`;
+                usersList.forEach(user => {
+                    html += `
+                        <div class="user-card">
+                            <strong>${user.name}</strong> (${user.username})<br>
+                            <span class="text-muted small">📧 Email: ${user.email} | 🏢 Company: ${user.company.name}</span>
+                        </div>
+                    `;
+                });
+                $('#api-output').html(html);
+            }
+        });
+    </script>
+</body>
+</html>

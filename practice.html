@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .hidden{
+        display: none;
+    }
+</style>
+<body>
+    <p  id="p1" class="hidden">Show</p>
+    <div class="movie-grid" id="movieGrid"></div>
+    <script>
+        const movies = [
+    { id: 1, title: "The Last Signal", genre: "sci-fi", genreLabel: "Sci-fi", rating: "8.7", duration: "2h 18m", tag: "New", image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=85" },
+    { id: 2, title: "Paper Moons", genre: "drama", genreLabel: "Drama", rating: "8.2", duration: "1h 56m", tag: "Critics' pick", image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=85" },
+    { id: 3, title: "Midnight Run", genre: "action", genreLabel: "Action", rating: "7.9", duration: "2h 06m", tag: "Popular", image: "https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=800&q=85" },
+    { id: 4, title: "A Little Later", genre: "comedy", genreLabel: "Comedy", rating: "8.4", duration: "1h 42m", tag: "Feel good", image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=800&q=85" }
+];
+
+        const visibleMovies = movies.filter((e)=>{
+            return e.id % 2 == 0;
+        });
+        //{}{}
+        document.getElementById("movieGrid").innerHTML = visibleMovies.map((e)=>
+       `<p>${e.title}</p>
+        <button onclick="show()">Select Slot</button>`
+        ).join("")
+
+        
+        function show(){
+        
+                document.getElementById("p1").classList.remove("hidden")
+        
+        }
+    </script>
+</body>
+</html>

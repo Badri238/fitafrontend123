@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input id="email" onchange="changeText()" type="text">
+     <input id="password"  onchange="changeText()"   type="text">
+    <button onclick="handleClick()" id="btn" >Submit</button>
+
+    <!-- http://localhost:8080/api/user/login -->
+     <!-- HTTP METHOD GET POST PUT DELETE -->
+      <!-- 200 201 400 401 404 500 -->
+    <script>
+        let isValid = false;
+        function handleClick(){
+            if(isValid){
+                alert("Username & passwordd is valid")
+            }else{
+                alert("Username & password is not valid")
+            }
+
+        }
+        function changeText(){
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+            let emailValid = email.includes("@");
+            let passwordValid = password.length>8 && !password.includes("@");
+            console.log("email",emailValid)
+            console.log("password",passwordValid)
+            isValid= (emailValid && passwordValid)
+        }
+    </script>
+</body>
+</html>

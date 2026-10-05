@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p id="p1"></p>
+    <p id="p2"></p>
+
+    <p class="p3">class p tag</p>
+    <p class="p3">class p1 tag</p>
+    <p class="p3">class p2 tag</p>
+    <div id="d1">
+
+    </div>
+    <script>
+        document.querySelectorAll("#p1")[0].innerText="This is <strong>from</strong> JS";
+        console.log(document.getElementById("p1").textContent);
+        document.getElementById("p2").innerText=document.getElementById("p1").textContent;
+
+       for(let i=0;i<5;i++){
+         let newPtag = document.createElement("p");
+        newPtag.innerText="New Tag from JS";
+        document.getElementById("d1").append(newPtag)
+       }
+      
+
+       let ptags = document.querySelectorAll(".p3");
+       for (let index = 0; index < ptags.length; index++) {
+        ptags[index].style.color="yellow";
+       }
+    </script>
+</body>
+</html>
